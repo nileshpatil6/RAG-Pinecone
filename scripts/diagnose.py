@@ -30,8 +30,7 @@ async def diagnose_database():
             print(f"{directory}: exists, permissions: {oct(stat.st_mode)[-3:]}")
         else:
             print(f"{directory}: does not exist")
-    
-    # Test creating a file in /tmp
+      # Test creating a file in /tmp
     try:
         test_file = "/tmp/test_write.txt"
         with open(test_file, 'w') as f:
@@ -40,6 +39,18 @@ async def diagnose_database():
         print("/tmp: writable ✓")
     except Exception as e:
         print(f"/tmp: not writable ✗ - {e}")
+    
+    # Test SQLite file creation
+    try:
+        import sqlite3
+        test_db = "/tmp/test_sqlite.db"
+        conn = sqlite3.connect(test_db)
+        conn.execute("CREATE TABLE test (id INTEGER)")
+        conn.close()
+        os.remove(test_db)
+        print("SQLite in /tmp: working ✓")
+    except Exception as e:
+        print(f"SQLite in /tmp: failed ✗ - {e}")
     
     print()
     

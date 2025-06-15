@@ -39,13 +39,29 @@ class Settings(BaseSettings):
         db_url = self.database_url
         
         # If it's SQLite and pointing to current directory, redirect to /tmp
-        if "sqlite" in db_url.lower() and (":///" in db_url or "://.\\" in db_url):
-            if db_url.startswith("sqlite+aiosqlite:///./") or "student_notes.db" in db_url:
-                # Force to use /tmp directory for container environments
-                if os.environ.get("RENDER") or os.environ.get("DEPLOYMENT_ENV") == "production":
-                    return "sqlite+aiosqlite:///tmp/student_notes.db"
-                elif not db_url.startswith("sqlite+aiosqlite:///tmp/"):
-                    return "sqlite+aiosqlite:///tmp/student_notes.db"
+        if "sqlite" in db_url.lower():
+            # For production/container environments, always use /tmp with full path
+            if (os.environ.get("RENDER") or 
+                os.environ.get("DEPLOYMENT_ENV") == "production" or
+                self.app_env == "production"):
+                
+                # First try /tmp with absolute path
+                try_url = "sqlite+aiosqlite:////tmp/app_student_notes.db"
+                
+                # Test if we can create a file in /tmp
+                try:
+                    import sqlite3
+                    test_conn = sqlite3.connect("/tmp/test_db_access.db")
+                    test_conn.close()
+                    os.remove("/tmp/test_db_access.db")
+                    return try_url
+                except:
+                    # If /tmp doesn't work, fall back to in-memory database
+                    # This will lose data on restart but at least the app will run
+                    return "sqlite+aiosqlite:///:memory:"
+            elif not db_url.startswith("sqlite+aiosqlite:////tmp/"):
+                # Ensure it uses absolute path in /tmp
+                return "sqlite+aiosqlite:////tmp/app_student_notes.db"
         
         return db_url
     

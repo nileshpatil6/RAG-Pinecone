@@ -42,12 +42,19 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 async def init_db():
     """Initialize database tables"""
-    from app.models.database import Base
-    
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    try:
+        from app.models.database import Base
         
-    logger.info("database_initialized")
+        logger.info("initializing_database", url=settings.safe_database_url)
+        
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+            
+        logger.info("database_initialized")
+    except Exception as e:
+        logger.error("database_initialization_failed", error=str(e))
+        # Re-raise the exception so the app startup fails if database can't be initialized
+        raise
 
 
 async def close_db():
