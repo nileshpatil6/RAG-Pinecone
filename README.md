@@ -85,14 +85,14 @@ make docker-run
 
 **Register**
 ```bash
-curl -X POST http://localhost:8000/auth/register \
+curl -X POST https://rag-pinecone.onrender.com/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email": "student@example.com", "password": "securepass123"}'
 ```
 
 **Login**
 ```bash
-curl -X POST http://localhost:8000/auth/login \
+curl -X POST https://rag-pinecone.onrender.com/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "student@example.com", "password": "securepass123"}'
 ```
@@ -101,14 +101,14 @@ curl -X POST http://localhost:8000/auth/login \
 
 **Upload Notes**
 ```bash
-curl -X POST http://localhost:8000/api/upload_notes \
+curl -X POST https://rag-pinecone.onrender.com/api/upload_notes \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -F "file=@notes.pdf"
 ```
 
 **List Documents**
 ```bash
-curl http://localhost:8000/api/documents \
+curl https://rag-pinecone.onrender.com/api/documents \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
@@ -116,7 +116,7 @@ curl http://localhost:8000/api/documents \
 
 **Ask Question** (Streaming Response)
 ```bash
-curl -X POST http://localhost:8000/api/ask \
+curl -X POST https://rag-pinecone.onrender.com/api/ask \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"query": "What are the key concepts in Chapter 3?"}'
@@ -126,7 +126,7 @@ curl -X POST http://localhost:8000/api/ask \
 
 **Get Usage Stats**
 ```bash
-curl http://localhost:8000/api/dashboard \
+curl https://rag-pinecone.onrender.com/api/dashboard \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 

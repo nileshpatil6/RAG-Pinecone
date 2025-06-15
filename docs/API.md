@@ -3,7 +3,7 @@
 ## Base URL
 
 ```
-http://localhost:8000
+https://rag-pinecone.onrender.com
 ```
 
 ## Authentication
