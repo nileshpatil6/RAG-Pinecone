@@ -7,9 +7,14 @@ from app.core.config import settings
 
 logger = structlog.get_logger()
 
+# Log the database URL being used
+logger.info("database_configuration", 
+           original_url=settings.database_url,
+           safe_url=settings.safe_database_url)
+
 # Create async engine
 engine = create_async_engine(
-    settings.database_url,
+    settings.safe_database_url,
     echo=settings.debug,
     future=True
 )

@@ -56,6 +56,12 @@ GEMINI_API_KEY=your_gemini_api_key_here
 JWT_SECRET_KEY=your_super_secret_jwt_key_here
 ```
 
+**IMPORTANT**: If you're having database permission issues, also add:
+```env
+DATABASE_URL=sqlite+aiosqlite:///tmp/student_notes.db
+DEPLOYMENT_ENV=production
+```
+
 **Optional environment variables** (these have defaults):
 ```env
 APP_ENV=production
@@ -92,12 +98,25 @@ TOP_K_RESULTS=8
 
 **Current Setup**: SQLite (file-based)
 - ✅ **Pros**: Simple, no additional setup
-- ⚠️ **Cons**: Data may be lost on redeploys, not suitable for high traffic
+- ⚠️ **Cons**: Data may be lost on redeploys, not suitable for high traffic, permission issues in containers
 
-**For Production**: Consider upgrading to PostgreSQL
-1. Add a PostgreSQL database in Render
-2. Update `DATABASE_URL` environment variable
-3. Run migrations if needed
+**For Production (Recommended)**: PostgreSQL
+1. In Render Dashboard, create a new PostgreSQL database
+2. Copy the database URL from Render
+3. Update `DATABASE_URL` environment variable to the PostgreSQL URL
+4. Install PostgreSQL driver: Add `asyncpg==0.29.0` to requirements.txt
+5. Run migrations if needed
+
+**Quick PostgreSQL Setup:**
+```env
+DATABASE_URL=postgresql+asyncpg://username:password@hostname:port/database_name
+```
+
+**SQLite Fix for Development:**
+If sticking with SQLite, ensure it uses a writable directory:
+```env
+DATABASE_URL=sqlite+aiosqlite:///tmp/student_notes.db
+```
 
 ## Troubleshooting Common Issues
 

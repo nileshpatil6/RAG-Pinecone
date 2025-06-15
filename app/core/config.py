@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings
 from pydantic import Field, field_validator
 from typing import Optional
+import os
 
 
 class Settings(BaseSettings):
@@ -30,7 +31,23 @@ class Settings(BaseSettings):
     jwt_refresh_token_expire_days: int = Field(default=7)
     
     # Database
-    database_url: str = Field(default="sqlite+aiosqlite:///./student_notes.db")
+    database_url: str = Field(default="sqlite+aiosqlite:///tmp/student_notes.db")
+    
+    @property
+    def safe_database_url(self) -> str:
+        """Ensure database URL points to a writable location"""
+        db_url = self.database_url
+        
+        # If it's SQLite and pointing to current directory, redirect to /tmp
+        if "sqlite" in db_url.lower() and (":///" in db_url or "://.\\" in db_url):
+            if db_url.startswith("sqlite+aiosqlite:///./") or "student_notes.db" in db_url:
+                # Force to use /tmp directory for container environments
+                if os.environ.get("RENDER") or os.environ.get("DEPLOYMENT_ENV") == "production":
+                    return "sqlite+aiosqlite:///tmp/student_notes.db"
+                elif not db_url.startswith("sqlite+aiosqlite:///tmp/"):
+                    return "sqlite+aiosqlite:///tmp/student_notes.db"
+        
+        return db_url
     
     # File Upload
     max_upload_size_mb: int = Field(default=10)
