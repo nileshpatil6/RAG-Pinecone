@@ -1,0 +1,66 @@
+from pydantic_settings import BaseSettings
+from pydantic import Field, field_validator
+from typing import Optional
+
+
+class Settings(BaseSettings):
+    # Application
+    app_name: str = Field(default="StudentNotesRAG")
+    app_version: str = Field(default="1.0.0")
+    app_env: str = Field(default="development")
+    debug: bool = Field(default=False)
+    
+    # Server
+    host: str = Field(default="0.0.0.0")
+    port: int = Field(default=8000)
+    
+    # Pinecone
+    pinecone_api_key: str
+    pinecone_project_id: str
+    pinecone_index_name: str = Field(default="student-notes")
+    pinecone_environment: str = Field(default="us-east-1")
+    
+    # Google Gemini
+    gemini_api_key: str
+    
+    # JWT
+    jwt_secret_key: str
+    jwt_algorithm: str = Field(default="HS256")
+    jwt_access_token_expire_minutes: int = Field(default=30)
+    jwt_refresh_token_expire_days: int = Field(default=7)
+    
+    # Database
+    database_url: str = Field(default="sqlite+aiosqlite:///./student_notes.db")
+    
+    # File Upload
+    max_upload_size_mb: int = Field(default=10)
+    allowed_file_types_str: str = Field(default="pdf,docx,txt", alias="allowed_file_types")
+    
+    @property
+    def allowed_file_types(self) -> list[str]:
+        return [item.strip() for item in self.allowed_file_types_str.split(',')]
+    
+    # RAG Configuration
+    chunk_size: int = Field(default=400)
+    chunk_overlap: int = Field(default=50)
+    embedding_dimension: int = Field(default=768)
+    top_k_results: int = Field(default=8)
+    
+    # Logging
+    log_level: str = Field(default="INFO")
+    log_format: str = Field(default="json")
+    
+    # OpenTelemetry
+    otel_exporter_otlp_endpoint: Optional[str] = Field(default=None)
+    otel_service_name: str = Field(default="student-notes-rag")
+    
+    class Config:
+        env_file = ".env"
+        case_sensitive = False
+        
+    @property
+    def max_upload_size_bytes(self) -> int:
+        return self.max_upload_size_mb * 1024 * 1024
+
+
+settings = Settings()
