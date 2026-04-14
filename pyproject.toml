@@ -17,6 +17,19 @@ exclude = '''
 
 [tool.ruff]
 line-length = 100
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
 select = [
     "E",   # pycodestyle errors
     "W",   # pycodestyle warnings
@@ -29,17 +42,6 @@ select = [
 ignore = []
 fixable = ["ALL"]
 unfixable = []
-exclude = [
-    ".git",
-    ".mypy_cache",
-    ".ruff_cache",
-    ".tox",
-    ".venv",
-    "__pypackages__",
-    "_build",
-    "build",
-    "dist",
-]
 
 [tool.mypy]
 python_version = "3.11"
