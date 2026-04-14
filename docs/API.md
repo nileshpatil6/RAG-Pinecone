@@ -2,6 +2,12 @@
 
 ## Base URL
 
+Local development:
+```
+http://localhost:8000
+```
+
+Render deployment:
 ```
 https://rag-pinecone.onrender.com
 ```
