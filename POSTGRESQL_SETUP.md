@@ -1,6 +1,27 @@
-# Quick PostgreSQL Setup for Render
+# PostgreSQL Setup
 
-## The Problem
+The app defaults to SQLite for local development. For production (or to
+avoid container filesystem permission issues on Render), switch to PostgreSQL.
+
+## Local development with PostgreSQL
+
+```bash
+# Using Docker
+docker run -d \
+  --name rag-postgres \
+  -e POSTGRES_DB=student_notes \
+  -e POSTGRES_USER=rag_user \
+  -e POSTGRES_PASSWORD=localpassword \
+  -p 5432:5432 \
+  postgres:15
+
+# Then update .env
+DATABASE_URL=postgresql+asyncpg://rag_user:localpassword@localhost:5432/student_notes
+```
+
+## Render PostgreSQL Setup
+
+### The Problem
 SQLite file permissions are causing issues in the containerized Render environment. The most reliable solution is to use PostgreSQL instead.
 
 ## Quick PostgreSQL Setup (Recommended)

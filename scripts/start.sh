@@ -2,46 +2,19 @@
 
 # Startup script for Render deployment
 
-echo "Starting application setup..."
+set -e
 
-# Set environment variables to indicate production deployment
+echo "[start] Configuring production environment..."
+
 export DEPLOYMENT_ENV=production
 export APP_ENV=production
-
-# Override database URL to ensure it's writable with absolute path
 export DATABASE_URL="sqlite+aiosqlite:////tmp/app_student_notes.db"
 
-echo "Environment variables:"
-echo "DATABASE_URL: $DATABASE_URL"
-echo "PORT: $PORT"
-echo "DEPLOYMENT_ENV: $DEPLOYMENT_ENV"
-echo "APP_ENV: $APP_ENV"
-
-# Create the database file with proper permissions
-echo "Setting up database file..."
+# Prepare writable SQLite file in /tmp (Render containers have read-only rootfs)
 DB_FILE="/tmp/app_student_notes.db"
-
-# Remove any existing database file to start fresh
-if [ -f "$DB_FILE" ]; then
-    rm -f "$DB_FILE"
-    echo "Removed existing database file"
-fi
-
-# Create the database file and set permissions
-touch "$DB_FILE"
-chmod 666 "$DB_FILE"
-echo "Created database file: $DB_FILE"
-
-# Also remove any SQLite auxiliary files that might cause issues
 rm -f "${DB_FILE}-wal" "${DB_FILE}-shm" 2>/dev/null || true
-
-# List files to confirm
-echo "Files in /tmp:"
-ls -la /tmp/app_* 2>/dev/null || echo "No app files found yet"
-
-# Run diagnostic script to check everything
-echo "Running diagnostics..."
-python scripts/diagnose.py
+touch "$DB_FILE" && chmod 666 "$DB_FILE"
+echo "[start] Database file ready: $DB_FILE"
 
 # Initialize database if it doesn't contain tables
 echo "Checking database initialization..."
