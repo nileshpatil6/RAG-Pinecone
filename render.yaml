@@ -3,10 +3,11 @@ services:
     name: student-notes-rag
     runtime: docker
     plan: starter  # Change to 'standard' or higher for production
-    repo: https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git  # Replace with your repo
-    buildCommand: docker build -t student-notes-rag .
+    repo: https://github.com/nileshpatil6/RAG-Pinecone.git
+    buildCommand: docker build -t rag-pinecone .
     startCommand: sh -c "python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT"
-    healthCheckPath: /health    envVars:
+    healthCheckPath: /health
+    envVars:
       - key: APP_ENV
         value: production
       - key: DEPLOYMENT_ENV
