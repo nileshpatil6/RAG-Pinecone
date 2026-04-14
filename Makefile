@@ -1,17 +1,30 @@
-.PHONY: help install dev test lint format run docker-build docker-run clean
+.PHONY: help install dev test lint format run docker-build docker-run docker-down docker-logs db-init check setup clean
 
 # Default target
 help:
 	@echo "Available commands:"
-	@echo "  make install      - Install dependencies"
-	@echo "  make dev          - Run development server"
-	@echo "  make test         - Run tests"
-	@echo "  make lint         - Run linting checks"
-	@echo "  make format       - Format code"
+	@echo "  make setup        - Full first-time setup (venv + install + .env)"
+	@echo "  make install      - Install all dependencies"
+	@echo "  make dev          - Run development server with auto-reload"
+	@echo "  make test         - Run tests with coverage"
+	@echo "  make lint         - Run ruff lint + mypy"
+	@echo "  make format       - Auto-format with ruff"
+	@echo "  make check        - lint + test (CI equivalent)"
 	@echo "  make run          - Run production server"
 	@echo "  make docker-build - Build Docker image"
-	@echo "  make docker-run   - Run Docker container"
-	@echo "  make clean        - Clean up generated files"
+	@echo "  make docker-run   - Start services via docker-compose"
+	@echo "  make docker-down  - Stop docker-compose services"
+	@echo "  make docker-logs  - Tail app container logs"
+	@echo "  make db-init      - Initialize the database"
+	@echo "  make clean        - Remove build artifacts and caches"
+
+# First-time project setup
+setup:
+	@[ -f .env ] || cp .env.example .env && echo "Created .env — add your API keys"
+	python -m venv .venv
+	.venv/bin/pip install -r requirements.txt -r requirements-dev.txt
+	.venv/bin/pre-commit install
+	@echo "Setup complete. Activate with: source .venv/bin/activate"
 
 # Install dependencies
 install:
@@ -33,8 +46,11 @@ lint:
 
 # Format code
 format:
-	python -m black .
+	python -m ruff format .
 	python -m ruff check . --fix
+
+# Run lint + tests (mirrors CI)
+check: lint test
 
 # Production server
 run:
