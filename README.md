@@ -1,4 +1,8 @@
-# Student Notes RAG Q&A Platform
+# RAG-Pinecone
+
+[![CI](https://github.com/nileshpatil6/RAG-Pinecone/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nileshpatil6/RAG-Pinecone/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 Production-ready Retrieval-Augmented Generation (RAG) system for student notes with Q&A capabilities.
 
@@ -32,8 +36,8 @@ Production-ready Retrieval-Augmented Generation (RAG) system for student notes w
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd student-notes-rag
+git clone https://github.com/nileshpatil6/RAG-Pinecone.git
+cd RAG-Pinecone
 ```
 
 2. Create virtual environment:
